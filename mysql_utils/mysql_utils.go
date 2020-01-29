@@ -1,6 +1,7 @@
 package mysql_utils
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 
@@ -17,16 +18,16 @@ func ParseError(err error) rest_errors.RestErr {
 
 	if !ok {
 		if strings.Contains(err.Error(), ErrorNoRow) {
-			return rest_errors.NewInternalServerError(fmt.Sprintf("no record matching given id"))
+			return rest_errors.NewInternalServerError("no record matching given id", errors.New("database error"))
 		}
-		return rest_errors.NewInternalServerError("error parsing database response")
+		return rest_errors.NewInternalServerError("error parsing database response", errors.New("database error"))
 	}
 
 	fmt.Println(sqlErr.Number)
 
 	switch sqlErr.Number {
 	case 1062:
-		return rest_errors.NewInternalServerError("Smth with uniqe field is wrong")
+		return rest_errors.NewInternalServerError("Smth with uniqe field is wrong", errors.New("database error"))
 	}
-	return rest_errors.NewInternalServerError("error processing request")
+	return rest_errors.NewInternalServerError("error processing request", errors.New("database error"))
 }
