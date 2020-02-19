@@ -68,6 +68,7 @@ func NewNotFoundError(message string) RestErr {
 		ErrMessage: message,
 		ErrStatus:  http.StatusNotFound,
 		ErrError:   "not_found",
+		ErrCauses:  nil,
 	}
 }
 
